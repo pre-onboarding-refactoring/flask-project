@@ -1,4 +1,3 @@
-# from app import db_sql
 from flask_sqlalchemy import SQLAlchemy
 
 db  = SQLAlchemy()
@@ -13,7 +12,7 @@ class Company(db.Model):
         # lazy="subquery",
         # backref=db.backref("companies", lazy=True),
         )
-    
+
 
 companies_tags = db.Table(
     "companies_tags",
@@ -23,17 +22,16 @@ companies_tags = db.Table(
 )
 
 
-
 class Tag(db.Model):
     __tablename__ = "tags"
     id   = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(32), nullable=False, unique=True)
-    lang = db.Column(db.String(32), nullable=False, unique=True)
+    name = db.Column(db.String(32), nullable=False)
+    lang = db.Column(db.String(32), nullable=False)
 
 
 class CompanyName(db.Model):
     __tablename__ = "company_names"
     id         = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name       = db.Column(db.String(32), nullable=False, unique=True)
-    lang       = db.Column(db.String(32), nullable=False, unique=True)
+    name       = db.Column(db.String(32), nullable=False)
+    lang       = db.Column(db.String(32), nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey("companies.id"), nullable=False) 
