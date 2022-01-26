@@ -1,9 +1,11 @@
 from flask            import Flask
 from flask_restx      import Api
 from flask_migrate    import Migrate
-from company.models import db
 
+from company.controller import CompanyView
+from company.models import db
 from config import DB_URL
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,5 +18,8 @@ db.app = app
 db.create_all()
 migrate = Migrate(app, db)
 
+api.add_resource(CompanyView, "/companies")
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=5000, debug=True)
