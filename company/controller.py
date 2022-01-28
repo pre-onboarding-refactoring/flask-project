@@ -12,25 +12,33 @@ class CompanyView(Resource):
         code = request.headers.get("x-wanted-language", "ko")
         data = request.get_json()
 
-        company_name_list = data.get("company_name")
+        companies_dict = list(data.get("company_name").items())
 
+        company = db.session.query(CompanyName).filter_by(lang=companies_dict[0][0], name=companies_dict[0][1]).first()
+
+        if company:
+                return {"message": "ALREADY EXIST COMPANY"}, 404
+        
         company = Company()
         db.session.add(company)
         db.session.commit()
 
-        for code, name in company_name_list.items():
-            company_name = CompanyName(name=name, lang=code, company_id=company.id)
+        for lang, name in companies_dict:
+            company_name = CompanyName(name=name, lang=lang, company_id=company.id)
             db.session.add(company_name)
 
-        tags = data.get("tags")
-
-        for tag in tags:
-            for lang, name in tag["tag_name"].items():
+        tag_list = []
+        for tag in data.get("tags"):
+            for lang, name in tag.get("tag_name").items():
                 tag_obj = db.session.query(Tag).filter_by(lang=lang, name=name).first()
 
                 if not tag_obj:
                     tag_obj = Tag(name=name, lang=lang)
                     db.session.add(tag_obj)
+                    db.session.commit()
+                
+                if lang == code:
+                    tag_list.append(name)
 
                 companies_tags_query = companies_tags.insert().values(
                     company_id = company.id,
@@ -40,4 +48,4 @@ class CompanyView(Resource):
 
         db.session.commit()
 
-        return {"message": "SUCCESS"}, 201
+        return {"message": "SUCCESS", "company_name": data.get("company_name").get(code), "tags": tag_list}, 201
