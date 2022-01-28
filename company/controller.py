@@ -1,3 +1,5 @@
+import string
+
 from flask_restx import Resource
 from flask import request
 
@@ -49,3 +51,21 @@ class CompanyView(Resource):
         db.session.commit()
 
         return {"message": "SUCCESS", "company_name": data.get("company_name").get(code), "tags": tag_list}, 201
+
+
+class SearchCompanyView(Resource):
+    def get(self, company_name):
+        code = request.headers.get("x-wanted-language")
+
+        company = CompanyName.query.filter_by(name=string.capwords(company_name), lang=code).first()
+
+        if company is None:
+            return {"message": "NOT FOUND COMPANY"}, 404
+
+        tag_list = []
+        for com_tag in db.session.query(companies_tags).filter_by(company_id=company.company_id):
+            for tag in Tag.query.filter_by(id=com_tag.tag_id):
+                if tag.lang == code:
+                    tag_list.append(tag.name)
+
+        return {"message": "SUCCESS", "company_name": string.capwords(company_name), "tags": tag_list}, 200
