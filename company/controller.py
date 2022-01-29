@@ -6,10 +6,29 @@ from flask import request
 from company.models import *
 
 
-class CompanyView(Resource):
+class CompanySearchView(Resource):
     def get(self):
-        pass
 
+        code         = request.headers.get("x-wanted-language", "ko")
+        company_name = request.args.get("query")
+    
+        if company_name is "":
+            return {"message" : "KEY ERROR"}, 404
+        
+        company_name_datas = db.session.query(CompanyName).filter(CompanyName.name.like(f"%{company_name}%"), CompanyName.lang==code).all()
+        
+        if not company_name_datas:
+            return {"message" : "COMPANY NOT FOUND"}, 404
+        
+        result = [
+            {"company_name" : company_name.name}
+            for company_name in company_name_datas
+        ]
+
+        return result, 201
+
+
+class CompanyView(Resource):
     def post(self):
         code = request.headers.get("x-wanted-language", "ko")
         data = request.get_json()

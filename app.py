@@ -2,7 +2,7 @@ from flask            import Flask
 from flask_restx      import Api
 from flask_migrate    import Migrate
 
-from company.controller import CompanyView, SearchCompanyView
+from company.controller import CompanyView, SearchCompanyView, CompanySearchView
 from company.models import db
 from config import DB_URL
 
@@ -20,7 +20,8 @@ migrate = Migrate(app, db)
 
 api.add_resource(CompanyView, "/companies")
 api.add_resource(SearchCompanyView, "/companies/<company_name>")
+api.add_resource(CompanySearchView, "/search")
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=6000, debug=True)
