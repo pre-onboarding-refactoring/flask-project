@@ -1,11 +1,15 @@
 import string
 
-from flask_restx import Resource
+from flask_restx import Resource, Api, Namespace, fields
 from flask import request
+
 
 from company.models import *
 
 
+Company = Namespace("About Company", description="회사 정보 info")
+
+@Company.route('/search')
 class CompanySearchView(Resource):
     def get(self):
 
@@ -25,10 +29,11 @@ class CompanySearchView(Resource):
             for company_name in company_name_datas
         ]
 
-        return result, 201
+        return result, 200
 
 
-class CompanyView(Resource):
+@Company.route('')
+class CompanyInfoView(Resource):
     def post(self):
         code = request.headers.get("x-wanted-language", "ko")
         data = request.get_json()
@@ -72,7 +77,8 @@ class CompanyView(Resource):
         return {"message": "SUCCESS", "company_name": data.get("company_name").get(code), "tags": tag_list}, 201
 
 
-class SearchCompanyView(Resource):
+@Company.route('/<company_name>')
+class CompanyDetailView(Resource):
     def get(self, company_name):
         code = request.headers.get("x-wanted-language")
 
