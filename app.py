@@ -29,5 +29,5 @@ def create_app(test_db_url=None):
 
 
 if __name__ == '__main__':
-    app = create_app()
+    app = create_app()[0]
     app.run(host="0.0.0.0", port=6000, debug=True)
