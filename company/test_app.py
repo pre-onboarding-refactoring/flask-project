@@ -62,7 +62,7 @@ def test_company_name_autocomplete(client):
     resp = client.get('/companies/search', query_string=dict(query="라인"), headers=[("x-wanted-language", "ko")])
     searched_companies = json.loads(resp.data.decode("utf-8"))
 
-    assert client.status_code == 200
+    assert resp.status_code == 200
     assert searched_companies == [
         {"company_name": "라인"},
         {"company_name": "라인 프레쉬"},
