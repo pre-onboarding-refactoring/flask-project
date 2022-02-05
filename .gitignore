@@ -356,4 +356,4 @@ zsdoc/data
 /tests/_output/*
 !/tests/_output/.gitkeep
 
-config.py
+my_settings.py
