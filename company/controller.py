@@ -1,22 +1,20 @@
 import string
 
-from flask_restx import Resource, Api, Namespace, fields
+from flask_restx import Resource, Namespace
 from flask import request
-
 
 from company.models import *
 
+Company_Info = Namespace("About Company", description="회사 정보 info")
 
-Company = Namespace("About Company", description="회사 정보 info")
-
-@Company.route('/search')
+@Company_Info.route('/search')
 class CompanySearchView(Resource):
     def get(self):
 
-        code         = request.headers.get("x-wanted-language", "ko")
+        code = request.headers.get("x-wanted-language", "ko")
         company_name = request.args.get("query")
     
-        if company_name is "":
+        if company_name == "":
             return {"message" : "KEY ERROR"}, 404
         
         company_name_datas = db.session.query(CompanyName).filter(CompanyName.name.like(f"%{company_name}%"), CompanyName.lang==code).all()
@@ -32,7 +30,7 @@ class CompanySearchView(Resource):
         return result, 200
 
 
-@Company.route('')
+@Company_Info.route('')
 class CompanyInfoView(Resource):
     def post(self):
         code = request.headers.get("x-wanted-language", "ko")
@@ -74,10 +72,10 @@ class CompanyInfoView(Resource):
 
         db.session.commit()
 
-        return {"message": "SUCCESS", "company_name": data.get("company_name").get(code), "tags": tag_list}, 201
+        return {"company_name": data.get("company_name").get(code), "tags": tag_list}, 201
 
 
-@Company.route('/<company_name>')
+@Company_Info.route('/<company_name>')
 class CompanyDetailView(Resource):
     def get(self, company_name):
         code = request.headers.get("x-wanted-language")
@@ -93,4 +91,4 @@ class CompanyDetailView(Resource):
                 if tag.lang == code:
                     tag_list.append(tag.name)
 
-        return {"message": "SUCCESS", "company_name": string.capwords(company_name), "tags": tag_list}, 200
+        return {"company_name": string.capwords(company_name), "tags": tag_list}, 200
