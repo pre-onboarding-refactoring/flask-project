@@ -93,7 +93,7 @@ API URL: http://3.35.218.65:6000/
 
 - Method: GET
 ```
-http://3.36.59.83:8000/companies/라인 프레쉬
+http://3.35.218.65:6000/companies/라인 프레쉬
 ```
 
 - parameter : path parameter
@@ -119,7 +119,7 @@ http://3.36.59.83:8000/companies/라인 프레쉬
 
 - Method: GET
 ```
-http://3.35.218.65:6000/search?query=원
+http://3.35.218.65:6000/companies/search?query=원
 ```
 
 - parameter : query string
